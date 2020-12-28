@@ -1,0 +1,37 @@
+{
+  "name": "chorinator-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hnestmann/chorinator.git"
+  },
+  "scripts": {
+    "start": "kill-port 3000 && npm-run-parallel dev openbrowser",
+    "dev": "nodemon index.js",
+    "openbrowser": "sleep 1 && open-cli http://localhost:3000"
+  },
+  "author": "Holger Nestmann",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/hnestmann/chorinator/issues"
+  },
+  "homepage": "https://github.com/hnestmann/chorinator#readme",
+  "dependencies": {
+    "koa": "^2.13.0",
+    "koa-mount": "^4.0.0",
+    "koa-router": "^10.0.0",
+    "koa-static": "^5.0.0"
+  },
+  "devDependencies": {
+    "kill-port": "^1.6.1",
+    "nodemon": "^2.0.6",
+    "npm-run-parallel": "^0.6.0",
+    "open-cli": "^6.0.1"
+  },
+  "engines": {
+    "node": ">= 15.15.0"
+  }
+}
