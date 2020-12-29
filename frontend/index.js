@@ -4,14 +4,17 @@ import mount from 'koa-mount';
 import serve from 'koa-static';
 import * as fileSystemAll from 'fs';
 import * as cacheAll from './server/cache.js'
+
 const cache = cacheAll.default.cache;
 const FileSystem = fileSystemAll.promises;
 const app = new Koa();
 const router = new Router();
 app.use(router.routes());
 
+const configRaw = await FileSystem.readFile("./config.json", "utf-8");
+const config = JSON.parse(configRaw);
+
 router.get('/service-worker.js', async context => {
-    console.info(cache)
     if (cache.get('/service-worker.js')) {
         context.body = cache.get('/service-worker.js');
     }  else {
@@ -28,7 +31,7 @@ router.get('/', async context => {
             <head>
                 <title>Chorinator</title>
             </head>
-            <body>
+            <body data-chore-service="${config.choreservice.url}">
                 Hello World
                 <script>
                 if ('serviceWorker' in navigator) {

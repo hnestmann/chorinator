@@ -1,0 +1,35 @@
+{
+  "name": "chorinator-chore-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hnestmann/chorinator.git"
+  },
+  "scripts": {
+    "start": "kill-port 3001 && nodemon index.js",
+    "start-native": "node index.js"
+  },
+  "author": "Holger Nestmann",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/hnestmann/chorinator/issues"
+  },
+  "homepage": "https://github.com/hnestmann/chorinator#readme",
+  "dependencies": {
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.0.0",
+    "mongodb": "^3.6.3",
+    "sanitize": "^2.1.0"
+  },
+  "devDependencies": {
+    "kill-port": "^1.6.1",
+    "nodemon": "^2.0.6"
+  },
+  "engines": {
+    "node": ">= 15.15.0"
+  }
+}
