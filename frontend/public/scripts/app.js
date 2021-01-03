@@ -111,6 +111,7 @@ async function init() {
             this.initCountDown();
             this.initImage();
             this.initBackground();
+            setInterval(this.initCountDown.bind(this), 10000)
         }
 
         connectedCallback() {
@@ -142,13 +143,25 @@ async function init() {
             var hours = Math.floor(minutes / 60);
             var days = Math.floor(hours / 24)
             var countDownString = '';
-            if (days > 0) {
-                countDownString += `${days} days ` 
+            if (next > 0) {
+                if (days > 0) {
+                    countDownString += `${days} days ` 
+                }
+                if (hours - days*24 > 0) {
+                    countDownString += `${hours - days*24} hours and ` 
+                }
+                countDownString += ` ${minutes - hours*60} minutes to go`
+            } else {
+                days += 1;
+                countDownString += '<span class="overdue">'
+                if (days < 0) {
+                    countDownString += `${days} days ` 
+                }
+                if (hours + days*24 < 0) {
+                    countDownString += `${Math.abs(hours - days*24)} hours and ` 
+                }
+                countDownString += `${Math.abs(minutes - hours*60)} minutes overdue</span>`
             }
-            if (hours - days*24 > 0) {
-                countDownString += `${hours - days*24} hours and ` 
-            }
-            countDownString += ` ${minutes - hours*60} minutes to go`
             this.shadowRoot.querySelector('.next').innerHTML = countDownString;
         }
 
@@ -164,6 +177,6 @@ async function init() {
 
     }
     window.customElements.define('chore-card', ChoreCard)
-    window.document.querySelector('body').style.display = 'block';
+    document.body.classList.add('fade');
 }
 init();
