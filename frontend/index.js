@@ -87,7 +87,7 @@ router.get('/', async context => {
                     ${inlineStatic.style}
                 </style>
                 
-                <body data-chore-service="${config.choreservice.url}">
+                <body>
                     <h1>Welcome to Chorinator</h1>
                     <p>To start please enter your username. A secure encryption key will be generated for you</p>
                     <form>
@@ -123,8 +123,8 @@ router.get('/', async context => {
 router.get('/recover-login/:username/:userid/:encryptionkey', async context => {      
     const inlineStatic = await getRecoverInline(); 
     let body;
-    if (cache.get('home')) {
-    body = cache.get('home');
+    if (cache.get('prelogin')) {
+        body = cache.get('prelogin');
     } else {
         const bodyUncompressed = `<!DOCTYPE html>
             <html lang="en">
@@ -156,7 +156,7 @@ router.get('/recover-login/:username/:userid/:encryptionkey', async context => {
             collapseInlineTagWhitespace: true,
             removeRedundantAttributes: true
         });
-        cache.add('home', body);
+        cache.add('prelogin', body);
     }
     
     
