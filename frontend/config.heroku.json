@@ -1,0 +1,6 @@
+{
+    "choreservice" : {
+        "url": "https://chores-service.herokuapp.com",
+        "_url": "http://localhost:3001"
+    }
+}

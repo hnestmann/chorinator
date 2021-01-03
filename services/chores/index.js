@@ -1,18 +1,53 @@
 import Koa from 'koa';
 import sanitize from 'sanitize';
 import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
 import MongoDB from 'mongodb';
+import fileType from 'file-type';
+import * as fileSystemAll from 'fs';
+import { request } from 'http';
+const FileSystem = fileSystemAll.promises;
+
 const MongoClient = MongoDB.MongoClient;
 
 const app = new Koa();
 const router = new Router();
-app.use(bodyParser());
+
+/**
+ *  Super simple request body getter promisified
+ *  @todo - make secure or get koa-bodyparser up an running
+ */
+function getBody(rawRequest) {
+    var promise = new Promise((resolve, reject) => {
+        let data = '';
+
+        rawRequest.on('data', chunk => {
+            data += chunk;
+        })
+        rawRequest.on('end', () => {
+            resolve(data);
+        })
+
+        rawRequest.on('error', () => {
+            reject();
+        })
+        
+    });
+
+    return promise;
+}
+
+app.use(async (context, next) => {
+    var rawRequest = await context.req;
+    context.request.bodyText = await getBody(rawRequest)
+    await next();
+});
 app.use(router.routes());
 
+const configRaw = await FileSystem.readFile("./config.json", "utf-8");
+const config = JSON.parse(configRaw);
 const dbName = 'chorinator';
 
-const connection = await MongoClient.connect(`mongodb://localhost:27017/${dbName}`, { useUnifiedTopology: true });
+const connection = await MongoClient.connect(config.mongo.url, { useUnifiedTopology: true });
 const db = connection.db(dbName);
 
 const collection = db.collection('chores');
@@ -33,7 +68,7 @@ async function ensureUserTable(context, next)  {
     if (!user) {
         await userstate.insertOne({user: context.params.userid, version: 1});
     }
-    next();
+    await next();
 }
 
 /*
@@ -51,17 +86,34 @@ router.get('/chore-sync/:userid/:clientversion', ensureUserTable, async context 
     const clientVersion = sanitizer.value(context.params.clientversion, 'int');
     const user = await userstate.findOne({user: context.params.userid}, {});
     var serverVersion = user.version;
-    const activeChores = await collection.find({user: context.params.userid, version: {$lte:serverVersion, $gte:clientVersion}}, {}).toArray();
-    const deletedChores = await deletions.find({user: context.params.userid, version: {$lte:serverVersion, $gte:clientVersion}}, {}).toArray();
-    const result = {activeChores, deletedChores};
+    const result = {version : serverVersion};
+    if (serverVersion !== clientVersion) {
+        const activeChores = await collection.find({user: context.params.userid, version: {$lte:serverVersion, $gte:clientVersion}}, {}).toArray();
+        const deletedChores = await deletions.find({user: context.params.userid, version: {$lte:serverVersion, $gte:clientVersion}}, {}).toArray();
+        result.activeChores = activeChores;
+        result.deletedChores = deletedChores;
+    }
 
     context.body = JSON.stringify(result);
 });
 
+function dataURItoUint8Array(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = Buffer.from(dataURI.split(',')[1], 'base64').toString('binary');
+    
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return ia;
+}
 
-function parseChore(body, choreName, userid) {
+
+async function parseChore(body, choreName, userid) {
     var result = {};
-
     if (!body.choreFrequency || 
         !body.choreFrequency.interval || 
         !body.choreFrequency.unit) {
@@ -74,28 +126,52 @@ function parseChore(body, choreName, userid) {
     result.displayName = sanitizer.value(body.displayName, 'str');
     result.user = sanitizer.value(userid, 'str');
     result.choreName = sanitizer.value(choreName, 'str');
-
+    result.choreUpdated = sanitizer.value(body.choreUpdated, 'int');
+    if (body.choreImage && body.choreImage.startsWith('data:image/png;base64,')) {
+        const buffer = Buffer.from(body.choreImage.split(',')[1], 'base64');
+        const type = await fileType.fromBuffer(buffer);
+        if (type.mime === 'image/png') { 
+            result.choreImage = body.choreImage
+        }
+    }
+    result.choreType = sanitizer.value(body.choreType, 'str');
     return result;
 }
 
 /*
-curl --data "{\"choreFrequency\": {\"interval\": 90, \"unit\":\"minutes\"}, \"displayName\": \"gießen\"}" -H "Accept: application/json" -H "Content-Type: application/json" localhost:3001/chores/holger/giessen
+curl -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE localhost:3001/chores/holger/giessen
 */
-
+router.delete('/chores/:userid/:chorename', ensureUserTable, async context => {
+    const user = await userstate.findOne({user: context.params.userid}, {});
+    var version = user.version + 1;
+    var versionUpdate;
+    const result = await collection.deleteOne({choreName: context.params.chorename}, {});
+    if (result.result.ok === 1 && result.deletedCount === 1) {
+        versionUpdate = await userstate.updateOne({user: context.params.userid},{ $set: {version: version} }, { upsert: true });
+        context.body = JSON.stringify({newVersion: version});
+    } else {
+        context.body = JSON.stringify({error: true});
+    }
+});
+/*
+curl --data "{\"choreFrequency\": {\"interval\": 90, \"unit\":\"minutes\"}, \"displayName\": \"gießen\"}" -H "Accept: application/json" -H "Content-Type: application/json" https://chores-service.herokuapp.com/chores/holger/giessen
+*/
 router.post('/chores/:userid/:chorename', ensureUserTable, async context => {
     let body;
+    console.info(context.request.bodyText);
     try {
-        body = parseChore(context.request.body, context.params.chorename, context.params.userid);
+        body = await parseChore(JSON.parse(context.request.bodyText), context.params.chorename, context.params.userid);
         if (body) {
             const user = await userstate.findOne({user: context.params.userid}, {});
             var version = user.version + 1;
             body.addedIn = Date.now();
             body.version = version;
+            var versionUpdate;
             const result = await collection.insertOne(body, {});
             if (result.result.ok === 1) {
-                 await userstate.updateOne({user: context.params.userid},{ $set: {version: version} }, { upsert: true });
+                versionUpdate = await userstate.updateOne({user: context.params.userid},{ $set: {version: version} }, { upsert: true });
             }
-            context.body = JSON.stringify({update: result.result, versionChange: versionUpdate.result});
+            context.body = JSON.stringify({update: result.result, versionChange: versionUpdate.result, newVersion: version});
         }
     } catch (exception) {
         context.status = 400;
@@ -168,6 +244,6 @@ router.get('/clear', ensureUserTable, async context => {
 
 app.on('error', (err) => {
     console.error('App Error', err)
-  });
+});
 
-app.listen(3001);
+app.listen(process.env.PORT || 3001);

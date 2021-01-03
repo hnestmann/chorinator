@@ -9,9 +9,12 @@
     "url": "git+https://github.com/hnestmann/chorinator.git"
   },
   "scripts": {
-    "start": "kill-port 3000 && npm-run-parallel dev openbrowser",
+    "start": "node index.js",
+    "deploy": "cp config.heroku.json config.json && git add . && git commit -am \"make it better\" && git push heroku master",
+    "start-dev": "cp config.local.json config.json && kill-port 3000 && npm-run-parallel dev openbrowser",
     "dev": "nodemon index.js",
-    "openbrowser": "sleep 1 && open-cli http://localhost:3000"
+    "openbrowser": "sleep 1 && open-cli http://localhost:3000",
+    "kill": "kill-port 3000 && kill-port 3001"
   },
   "author": "Holger Nestmann",
   "license": "BSD-2-Clause",
@@ -20,10 +23,13 @@
   },
   "homepage": "https://github.com/hnestmann/chorinator#readme",
   "dependencies": {
+    "html-minifier": "^4.0.0",
     "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
     "koa-mount": "^4.0.0",
     "koa-router": "^10.0.0",
-    "koa-static": "^5.0.0"
+    "koa-static": "^5.0.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "kill-port": "^1.6.1",
@@ -32,6 +38,6 @@
     "open-cli": "^6.0.1"
   },
   "engines": {
-    "node": ">= 15.15.0"
+    "node": ">= 14.15.3"
   }
 }

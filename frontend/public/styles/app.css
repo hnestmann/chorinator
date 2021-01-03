@@ -1,0 +1,67 @@
+/* 355542 3D5535 543552 */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font: normal normal 400 1.2rem/1.5rem sans-serif;
+    text-align: center;
+    color: #444444;
+    margin-top: 1rem;
+    display: none;
+}
+
+.grid{
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,20rem);
+    justify-content: center;
+    grid-gap: 2rem;
+    margin: 2rem;
+}
+
+button {
+    background: #543552;
+    color: #FFF;
+    border-radius: 5px;
+    border: 1px solid #3C263B;
+    height: max-content;
+    padding: 0.7rem;
+    font-size: 0.9em;
+    margin: 1em;
+}
+
+chore-card {
+    box-shadow:  0px 2px 8px 0px #BBBBBB;
+}
+
+.menu {
+    position: fixed;
+    background-color: #FFFFFFEE;
+    bottom: 0;
+    width: 100%;
+    border-top: solid 1px #BBBBBB;
+}
+.topline {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+.menu .p {
+    height: fit-content;
+}
+
+.menu #qrcode img {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+}
+
+.spacer {
+    height: 5rem;
+}

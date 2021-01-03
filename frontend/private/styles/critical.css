@@ -1,0 +1,45 @@
+body {
+    font: normal normal 400 1.2rem/1.5rem sans-serif;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #444444;
+}
+
+input {
+    border-radius: 30px;
+    border: 1px solid #AAAAAA;
+    padding: 12px; 
+    width: 200px;
+    height: 24px;
+    margin: 0px 5px;
+    visibility: visible;
+    font-size: 0.9em;
+}
+
+fieldset {
+    border: 0px;
+}
+
+label {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+button {
+    background: #543552;
+    color: #FFF;
+    border-radius: 14px;
+    border: 1px solid #3C263B;
+    height: max-content;
+    padding: 14px;
+    font-size: 0.9em;
+}

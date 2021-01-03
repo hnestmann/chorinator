@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Chorinator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Description" content="Chorinator is a little secure private web app to keep track off recurring chores">
+        <link href="/public/styles/choreform.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <form class="normform">
+            <fieldset>
+                <video id="webcam" autoplay playsinline width="640" height="480"></video>
+                <div class="hide-preview">
+                    <canvas id="canvas" class="d-none"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="snap">Snap</button>
+                    <img id="preview">
+                </div>
+                <label for="name">Name</label>
+                <input name="name" id="name" placeholder="Name"/>
+                
+                <label for="frequency">Frequency</label>
+                <input name="frequency" id="frequency" placeholder="Frequency"/>
+
+                <label for="unit">Unit</label>
+                <select name="unit" id="unit" size="2">
+                    <option>Days</option>
+                    <option>Minutes</option>
+                </select>
+
+                <label for="type">Type</label>
+                <select name="type" id="type" size="4">
+                    <option value="water-plants">Water Plants</option>
+                    <option value="exercise">Exercise</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="groceries">Get Groceries</option>
+                </select>
+
+                <button id="newChoreSubmit">Submit</button>
+            </fieldset>
+        </form>
+    </body>
+    <script type="text/javascript" src="/public/scripts/camera.js"></script>
+    <script src="/public/scripts/app.js"></script>
+    <script src="/public/scripts/utils.js"></script>
+</html>

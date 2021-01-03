@@ -1,0 +1,90 @@
+<style>
+    .card-main {
+        text-align: center;
+        position: relative;
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 10rem;
+    }
+
+    .card-main.exercise {
+        background-image: url('/public/backgrounds/exercise.png');
+    }
+
+    .card-main.groceries {
+        background-image: url('/public/backgrounds/groceries.png');
+    }
+
+    .card-main.laundry {
+        background-image: url('/public/backgrounds/laundry.png');
+    }
+
+    .card-main.water-plants {
+        background-image: url('/public/backgrounds/water-plants.png');
+    }
+
+    img {
+        width: 80%;
+        margin-top:1.5rem;
+        border-radius: 25px;
+        box-shadow: 0px 0px 9px 1px #000000;
+    }
+
+    h2 {
+        font-size: 1.5rem; 
+    }
+
+    .details {
+        margin: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .action { 
+        background-repeat: no-repeat;
+        height: 2.2rem;
+        width: 6rem;
+        background-size: 1.5rem 1.5rem;
+        background-position: 0.3rem 50%;
+        padding-left: 2.2rem;
+        border: solid 1px #DDDDDD;
+        background-color: transparent;
+    }
+
+    .edit {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iNTJweCIgaGVpZ2h0PSI1MnB4IiB2aWV3Qm94PSIwIDAgNTIgNTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUyIDUyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBmaWxsPSIjODg4ODg4IiBkPSJNOS41LDMzLjRsOC45LDguOWMwLjQsMC40LDEsMC40LDEuNCwwTDQyLDIwYzAuNC0wLjQsMC40LTEsMC0xLjRsLTguOC04LjhjLTAuNC0wLjQtMS0wLjQtMS40LDBMOS41LDMyLjEKCQlDOS4xLDMyLjUsOS4xLDMzLjEsOS41LDMzLjR6Ii8+Cgk8cGF0aCBmaWxsPSIjODg4ODg4IiBkPSJNMzYuMSw1LjdjLTAuNCwwLjQtMC40LDEsMCwxLjRsOC44LDguOGMwLjQsMC40LDEsMC40LDEuNCwwbDIuNS0yLjVjMS42LTEuNSwxLjYtMy45LDAtNS41bC00LjctNC43CgkJYy0xLjYtMS42LTQuMS0xLjYtNS43LDBMMzYuMSw1Ljd6Ii8+Cgk8cGF0aCBmaWxsPSIjODg4ODg4IiBkPSJNMi4xLDQ4LjJjLTAuMiwxLDAuNywxLjksMS43LDEuN2wxMC45LTIuNmMwLjQtMC4xLDAuNy0wLjMsMC45LTAuNWwwLjItMC4yYzAuMi0wLjIsMC4zLTAuOS0wLjEtMS4zbC05LTkKCQljLTAuNC0wLjQtMS4xLTAuMy0xLjMtMC4xcy0wLjIsMC4yLTAuMiwwLjJjLTAuMywwLjMtMC40LDAuNi0wLjUsMC45TDIuMSw0OC4yeiIvPgo8L2c+Cjwvc3ZnPgo=");
+    } 
+
+    .delete {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iNTJweCIgaGVpZ2h0PSI1MnB4IiB2aWV3Qm94PSIwIDAgNTIgNTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUyIDUyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBmaWxsPSIjODg4ODg4IiBkPSJNNDUuNSwxMEgzM1Y2YzAtMi4yLTEuOC00LTQtNGgtNmMtMi4yLDAtNCwxLjgtNCw0djRINi41QzUuNywxMCw1LDEwLjcsNSwxMS41djNDNSwxNS4zLDUuNywxNiw2LjUsMTZoMzkKCQljMC44LDAsMS41LTAuNywxLjUtMS41di0zQzQ3LDEwLjcsNDYuMywxMCw0NS41LDEweiBNMjMsN2MwLTAuNiwwLjQtMSwxLTFoNGMwLjYsMCwxLDAuNCwxLDF2M2gtNlY3eiIvPgoJPHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTQxLjUsMjBoLTMxQzkuNywyMCw5LDIwLjcsOSwyMS41VjQ1YzAsMi44LDIuMiw1LDUsNWgyNGMyLjgsMCw1LTIuMiw1LTVWMjEuNUM0MywyMC43LDQyLjMsMjAsNDEuNSwyMHoKCQkgTTIzLDQyYzAsMC42LTAuNCwxLTEsMWgtMmMtMC42LDAtMS0wLjQtMS0xVjI4YzAtMC42LDAuNC0xLDEtMWgyYzAuNiwwLDEsMC40LDEsMVY0MnogTTMzLDQyYzAsMC42LTAuNCwxLTEsMWgtMgoJCWMtMC42LDAtMS0wLjQtMS0xVjI4YzAtMC42LDAuNC0xLDEtMWgyYzAuNiwwLDEsMC40LDEsMVY0MnoiLz4KPC9nPgo8L3N2Zz4K");
+    }
+
+    .done {
+        width: 100%;
+        border:none;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #FFFFFF;
+        background-color: #355542;
+        padding: 0.5rem;
+    }
+</style>
+
+<div class="card-main">
+    <img class="choreimage">
+    <h2 class="name"><slot name="chorename"/></h2>
+    <div class="details">
+        <div class="frequency"><slot name="chorefrequency"/></div>
+        <div class="next"></div>
+        <div class="actions">
+            <button class="edit action" disabled="true">EDIT</button>
+            <button class="delete action">DELETE</button>
+        </div>
+    </div>
+    <button class="done">ACCOMPLISH</button>
+</button>
+</div> 
