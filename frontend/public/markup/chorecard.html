@@ -42,6 +42,7 @@
     .actions {
         display: flex;
         justify-content: space-evenly;
+        margin-top: 0.8rem;
     }
 
     .action { 
@@ -73,6 +74,18 @@
         padding: 0.5rem;
     }
 
+    .next-bar {
+        width: 0%;
+        background-color: #355542;
+        height: 0.3rem;
+    }
+
+    .next-bar.overdue {
+        background: repeating-linear-gradient(  -55deg,  #FFFFFF,  #FFFFFF 10px,  #990000 10px,  #990000 20px);
+        width: 100%;
+    }
+
+
     .overdue {
         color: #990000;
     }
@@ -83,7 +96,9 @@
     <h2 class="name"><slot name="chorename"/></h2>
     <div class="details">
         <div class="frequency"><slot name="chorefrequency"/></div>
+        <div class="next-bar"></div>
         <div class="next"></div>
+        <div class="next-bar"></div>
         <div class="actions">
             <button class="edit action" disabled="true">EDIT</button>
             <button class="delete action">DELETE</button>

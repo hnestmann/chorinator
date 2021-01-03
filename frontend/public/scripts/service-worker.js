@@ -1,8 +1,26 @@
 importScripts('/public/scripts/utils.js');
 
+function getNextDueDate(chore) {
+    var timestamp = chore.choreUpdated;
+    var offset = 0;
+    if (chore.choreFrequency.unit === 'Days') {
+        offset = chore.choreFrequency.interval * 24 * 60 * 60 * 1000;
+    } else {
+        //else its minutes
+        offset = chore.choreFrequency.interval * 60 * 60 * 1000;
+    }
+    var next = timestamp + offset - Date.now();
+    chore.next = next;
+    return next;
+}
+
 function renderChores(chores) {
     var template = '';
     // @todo move templates into central place /public/markup/partials
+    chores.sort((choreA, choreB) => {
+        return getNextDueDate(choreA) - getNextDueDate(choreB);
+    });
+
     chores.forEach(chore => { 
         template += `<chore-card chore-id="${chore.choreName}" chore-unit="${chore.choreFrequency?.unit}" chore-interval="${chore.choreFrequency?.interval}" chore-updated="${chore.choreUpdated}" chore-image="${chore.choreImage}" chore-type="${chore.choreType}">
                         <div slot="chorename">${chore.displayName}</div>

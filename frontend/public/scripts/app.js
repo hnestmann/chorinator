@@ -144,6 +144,10 @@ async function init() {
             var days = Math.floor(hours / 24)
             var countDownString = '';
             if (next > 0) {
+                this.shadowRoot.querySelectorAll('.next-bar').forEach(element => {
+                    element.style.width = (offset * 100 / next) + '%'
+                });
+                
                 if (days > 0) {
                     countDownString += `${days} days ` 
                 }
@@ -153,6 +157,9 @@ async function init() {
                 countDownString += ` ${minutes - hours*60} minutes to go`
             } else {
                 days += 1;
+                this.shadowRoot.querySelectorAll('.next-bar').forEach(element => {
+                    element.classList.add('overdue')
+                });
                 countDownString += '<span class="overdue">'
                 if (days < 0) {
                     countDownString += `${days} days ` 
