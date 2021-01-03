@@ -1,7 +1,20 @@
+async function checkForPreExistingInstallation() {
+    var cache = await caches.open('personal');
+    var entry = await cache.match('/userinfo');
+    if (entry) {
+        var text = await entry.text();
+        var userInfo = JSON.parse(text);
+        if (userInfo.userId) {
+            window.location.assign('/');
+        }
+    }
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
             document.getElementById('register-button').disabled = false;
+            checkForPreExistingInstallation();
         }, function(err) {
             console.error('ServiceWorker registration failed: ', err);
         });
